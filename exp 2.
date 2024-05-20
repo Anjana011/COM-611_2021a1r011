@@ -1,0 +1,75 @@
+import numpy as np
+import pandas as pd
+data=pd.DataFrame(data=pd.read_csv(r"C:\Users\student\Downloads\data.csv"))
+print(data)
+     sky air temp humidity    wind water forecast enjoy sport
+0  sunny     warm   normal  strong  warm     same         yes
+1  sunny     warm     high  strong  warm     same         yes
+2  rainy     cold     high  strong  warm   change          no
+3  sunny     warm     high  strong  cool   change         yes
+concepts=np.array(data.iloc[:,0:-1])
+print(concepts)
+[['sunny' 'warm' 'normal' 'strong' 'warm' 'same']
+ ['sunny' 'warm' 'high' 'strong' 'warm' 'same']
+ ['rainy' 'cold' 'high' 'strong' 'warm' 'change']
+ ['sunny' 'warm' 'high' 'strong' 'cool' 'change']]
+target=np.array(data.iloc[:,-1])
+print(target)
+['yes' 'yes' 'no' 'yes']
+def learn(concepts,target):
+    specific_h=concepts[0].copy()
+    print("\n Initialization of specific_h and general_h")
+    print(specific_h)
+    
+    general_h=[["?"for i in range(len(specific_h))] for i in range(len(specific_h))]
+    print(general_h)
+    for i, h in enumerate(concepts):
+        if target[i] =='yes':
+            for x in range(len(specific_h)):
+                if h[x] != specific_h[x]:
+                    specific_h[x]="?"
+                    general_h[x]="?"
+                    
+        if target[i]=="No":
+            for x in range(len(specific_h)):
+                if h[x] != specific_h[x]:
+                    general_h[x][x]=specific_h[x]
+                else:
+                    general_h[x][x]="?"
+                    
+        print("\n Steps of Candidate Elimination Algorithm",i+1)
+        print(specific_h)
+        print(general_h)
+        
+    indices=[i for i, val in enumerate(general_h) if val==['?','?','?','?','?','?']]
+    for i in indices:
+        general_h.remove(['?','?','?','?','?','?'])
+    return specific_h,general_h
+s_final, g_final =learn(concepts,target)
+print("\n final specific_h:", s_final, sep="\n")
+print("\nFinal general_h:", g_final, sep="\n")
+ Initialization of specific_h and general_h
+['sunny' 'warm' 'normal' 'strong' 'warm' 'same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+ Steps of Candidate Elimination Algorithm 1
+['sunny' 'warm' 'normal' 'strong' 'warm' 'same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+ Steps of Candidate Elimination Algorithm 2
+['sunny' 'warm' '?' 'strong' 'warm' 'same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], '?', ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+ Steps of Candidate Elimination Algorithm 3
+['sunny' 'warm' '?' 'strong' 'warm' 'same']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], '?', ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?']]
+
+ Steps of Candidate Elimination Algorithm 4
+['sunny' 'warm' '?' 'strong' '?' '?']
+[['?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?'], '?', ['?', '?', '?', '?', '?', '?'], '?', '?']
+
+ final specific_h:
+['sunny' 'warm' '?' 'strong' '?' '?']
+
+Final general_h:
+['?', '?', '?']
